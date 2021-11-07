@@ -1,64 +1,149 @@
 import React, {useEffect, useState} from 'react';
-import {TouchableOpacity} from 'react-native';
-import styled from 'styled-components/native';
 import {ProductItem} from '../../components';
-
-const AppContainer = styled.View({
-  padding: 20,
-});
-
-const AppTitle = styled.Text({
-  color: '#000',
-  fontWeight: 600,
-  fontSize: 30,
-});
-
-const AppText = styled.Text({
-  color: '#000',
-  fontSize: 16,
-});
+import {createStore} from 'redux';
+import {rootReducer} from '../../redux/rootReducer';
+import {increment} from '../../redux/actions';
+import {environment} from '../../utils/environment';
+import * as COLORS from '../../styles/colors';
+import {
+  AppContainer,
+  AppProductsList,
+  AppProductTotalTitle,
+  AppTotalContainer,
+  AppGeneralTotalText,
+  AppText,
+} from './styled';
 
 const Products = () => {
-  const [totalPrice, setTotalPrice] = useState(0);
+  const store = createStore(rootReducer, {action: 0});
+  const [price, setPrice] = useState({
+    total: 0,
+    cargoTaxes: 0,
+  });
   const [products, setProducts] = useState([
     {
+      _id: 1,
       img: 'https://officesnapshots.com/wp-content/uploads/2018/03/WME-IMG-offices-melbourne-1-1200x801.jpg',
-      title: 'title',
-      subTitle: 'sub title',
-      rating: '3.4',
-      distance: '10',
+      title: 'Villa Bosphorus',
+      subTitle: 'Lorem İpsum Sit Dolor Met',
+      rating: '3.9',
+      distance: '3.7',
       price: 120,
       cargo: 10,
     },
     {
+      _id: 2,
       img: 'https://officesnapshots.com/wp-content/uploads/2018/03/WME-IMG-offices-melbourne-1-1200x801.jpg',
-      title: 'title',
-      subTitle: 'sub title',
-      rating: '3.4',
-      distance: '10',
-      price: 200,
-      cargo: 15,
+      title: 'Villa Bosphorus',
+      subTitle: 'Lorem İpsum Sit Dolor Met',
+      rating: '3.9',
+      distance: '3.7',
+      price: 120,
+      cargo: 10,
+    },
+    {
+      _id: 3,
+      img: 'https://officesnapshots.com/wp-content/uploads/2018/03/WME-IMG-offices-melbourne-1-1200x801.jpg',
+      title: 'Villa Bosphorus',
+      subTitle: 'Lorem İpsum Sit Dolor Met',
+      rating: '3.9',
+      distance: '3.7',
+      price: 120,
+      cargo: 10,
+    },
+    {
+      _id: 4,
+      img: 'https://officesnapshots.com/wp-content/uploads/2018/03/WME-IMG-offices-melbourne-1-1200x801.jpg',
+      title: 'Villa Bosphorus',
+      subTitle: 'Lorem İpsum Sit Dolor Met',
+      rating: '3.9',
+      distance: '3.7',
+      price: 120,
+      cargo: 10,
     },
   ]);
+  const [basket, setBasket] = useState<any>([]);
+
+  // useEffect(() => {
+  //   getProducts();
+  // }, []);
 
   useEffect(() => {
-    let tempPrice = 0;
-    products.forEach(el => {
-      setTotalPrice((tempPrice += el.price));
+    calculatePrice();
+  }, [basket]);
+
+  const calculatePrice = () => {
+    let tempTotal = 0;
+    let tempCargoTaxes = 0;
+    basket.forEach((el: any) => {
+      tempTotal += el['price'];
+      tempCargoTaxes +=
+        el['cargo'] + (el['price'] * environment.TAX_RATE) / 100;
+
+      setPrice({total: tempTotal, cargoTaxes: tempCargoTaxes});
     });
-  }, [products]);
+  };
+
+  const getProducts = async () => {
+    try {
+      const response = await fetch(`${environment.PUBLIC_URL}/prodcuts`, {
+        method: 'GET',
+      });
+      const data = await response.json();
+
+      console.log(data);
+
+      setProducts(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const renderProducts = () => {
     return products.map((item, index) => {
-      return <ProductItem key={index} data={item} />;
+      let product = basket.find((el: any) => {
+        return el._id == item._id;
+      });
+      return (
+        <ProductItem
+          key={index}
+          data={item}
+          isAdded={product ? true : false}
+          callback={(res: any) => {
+            let tempArr = [];
+
+            let product = basket.find((el: any) => {
+              return el._id == res._id;
+            });
+
+            if (product) {
+              let products = basket.find((el: any) => {
+                return el._id != res._id;
+              });
+              tempArr = products || [];
+            } else {
+              tempArr = [...basket, res];
+            }
+            console.log(tempArr)
+            setBasket(tempArr);
+            // store.dispatch(increment);
+          }}
+        />
+      );
     });
   };
 
   return (
     <AppContainer>
-      {renderProducts()}
-      <AppTitle>Ürünlerin Toplamı</AppTitle>
-      <AppText>Toplam: {totalPrice}</AppText>
+      <AppProductsList>{renderProducts()}</AppProductsList>
+      <AppTotalContainer>
+        <AppProductTotalTitle>Ürünlerin Toplamı:</AppProductTotalTitle>
+        <AppText>Toplam: {price.total} TL</AppText>
+        <AppText>Vergiler + Kargo: {price.cargoTaxes.toFixed(2)} TL</AppText>
+        <AppGeneralTotalText>
+          Genel Toplam: {price.total + price.cargoTaxes} TL
+        </AppGeneralTotalText>
+      </AppTotalContainer>
     </AppContainer>
   );
 };

@@ -17,11 +17,12 @@ const TabNavigator = () => {
         initialRouteName="Products"
         screenOptions={{
           tabBarActiveTintColor: '#000',
-          tabBarInactiveTintColor: 'gray',
+          tabBarInactiveTintColor: '#4D4D4D',
           headerShown: false,
           tabBarStyle: {
             height: 60,
             paddingBottom: 7,
+            backgroundColor: '#fafafa'
           },
         }}>
         <Tab.Screen
@@ -29,16 +30,16 @@ const TabNavigator = () => {
           component={Products}
           options={{
             tabBarIcon: ({color}) => (
-              <FontAwesome5 name="th-large" color={color} size={28} />
+              <FontAwesome5 name="th-large" color={color} size={24} />
             ),
           }}
         />
         <Tab.Screen
-          name="Acount"
+          name="Account"
           component={Account}
           options={{
             tabBarIcon: ({color}) => (
-              <FontAwesome5 name="user-alt" color={color} size={28} />
+              <FontAwesome5 name="user-alt" color={color} size={24} />
             ),
           }}
         />
