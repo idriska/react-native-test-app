@@ -1,13 +1,15 @@
 import {DECREMENT, INCREMENT} from './types';
 
-export function increment() {
+export const increment = (data: {}) => {
   return {
     type: INCREMENT,
+    data: data
   };
 }
 
-export function decrement() {
+export const decrement = (data: {}) => {
   return {
     type: DECREMENT,
+    data: data
   };
 }
