@@ -3,6 +3,7 @@ import {Text, TouchableOpacity, View, Dimensions} from 'react-native';
 import styled from 'styled-components/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as COLORS from '../styles/colors';
+import { Product } from '../utils/interfaces';
 
 const {width, height} = Dimensions.get('window');
 
@@ -17,16 +18,6 @@ const AppContainer = styled.View({
 const AppImageContainer = styled.View({
   width: width * 0.2,
   height: width * 0.2,
-
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 6,
-  },
-  shadowOpacity: 1,
-  shadowRadius: 13,
-
-  elevation: 16,
 });
 
 const AppDataContainer = styled.View({
@@ -37,19 +28,30 @@ const AppImage = styled.Image({
   width: '100%',
   height: '100%',
   borderRadius: 12,
+  zIndex: 1
+});
+
+const AppImageShadow = styled.Image({
+  width: '100%',
+  height: '100%',
+  borderRadius: 12,
+  position: 'absolute',
+  top: 7,
+  left: 0,
+  opacity: 0.2,
 });
 
 const AppTitle = styled.Text({
   color: COLORS.SECONDARY,
   fontSize: 16,
   fontWeight: 600,
-  lineHeight: 24,
+  lineHeight: '24px',
 });
 
 const AppSubTitle = styled.Text({
   color: COLORS.PRIMARY,
   fontSize: 12,
-  lineHeight: 16,
+  lineHeight: '16px',
   marginVertical: 7,
 });
 
@@ -57,7 +59,7 @@ const AppAddToBasketButton = styled.Text({
   color: '#f00',
   fontSize: 12,
   fontWeight: 700,
-  lineHeight: 16,
+  lineHeight: '16px',
   marginLeft: 5,
 });
 
@@ -70,7 +72,7 @@ const AppBadgeText = styled.Text({
   color: COLORS.SECONDARY,
   fontSize: 12,
   fontWeight: 400,
-  lineHeight: 16,
+  lineHeight: '16px',
 });
 
 const AppIcon = styled.Image({
@@ -79,7 +81,7 @@ const AppIcon = styled.Image({
 });
 
 const ProductItem = ({data, isAdded, callback}: any) => {
-  const setCallback = (data: any) => {
+  const setCallback = (data: Product) => {
     callback(data);
   };
 
@@ -87,6 +89,11 @@ const ProductItem = ({data, isAdded, callback}: any) => {
     <AppContainer>
       <AppImageContainer>
         <AppImage
+          source={{
+            uri: data.img,
+          }}
+        />
+        <AppImageShadow
           source={{
             uri: data.img,
           }}

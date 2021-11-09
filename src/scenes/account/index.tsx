@@ -15,11 +15,11 @@ import {
   AppUserName,
   AppText,
   AppPickerContainer,
-  AppDivider
+  AppDivider,
 } from './styled';
 
 class Account extends Component {
-  constructor({props}: any) {
+  constructor(props: {}) {
     super(props);
   }
 

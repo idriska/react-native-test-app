@@ -19,7 +19,7 @@ const AppTitle = styled.Text({
   color: COLORS.SECONDARY,
   fontWeight: 600,
   fontSize: 32,
-  lineHeight: 42,
+  lineHeight: '42px',
   marginTop: 30,
 });
 
@@ -42,7 +42,7 @@ const AppSignUpButton = styled.Text({
   borderRadius: 12,
   height: 56,
   textAlign: 'center',
-  lineHeight: 56,
+  lineHeight: '56px',
   fontSize: 14,
 });
 
@@ -53,7 +53,7 @@ const AppLogOutButton = styled.Text({
   borderRadius: 12,
   height: 56,
   textAlign: 'center',
-  lineHeight: 56,
+  lineHeight: '56px',
   fontSize: 14,
 });
 
@@ -68,7 +68,7 @@ const AppText = styled.Text({
   color: '#000',
   fontSize: 14,
   fontWeight: 500,
-  lineHeight: 28,
+  lineHeight: '28px',
 });
 
 const AppLocaleTitle = styled.Text({

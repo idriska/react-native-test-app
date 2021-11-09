@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ProductItem} from '../../components';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
-import {rootReducer} from '../../redux/rootReducer';
+import {basketReducer} from '../../redux/basket-reducer';
 import {decrement, increment} from '../../redux/actions';
 import {environment} from '../../utils/environment';
 import {
@@ -13,15 +13,17 @@ import {
   AppGeneralTotalText,
   AppText,
 } from './styled';
+import { Product } from '../../utils/interfaces';
+
+const store = createStore(basketReducer, applyMiddleware(thunk));
 
 const Products = () => {
-  const store = createStore(rootReducer, applyMiddleware(thunk));
   const [price, setPrice] = useState({
     total: 0,
     cargoTaxes: 0,
   });
-  const [products, setProducts] = useState([]);
-  const [basket, setBasket] = useState<any>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [basket, setBasket] = useState<Product[]>([]);
 
   useEffect(() => {
     getProducts();
@@ -46,7 +48,7 @@ const Products = () => {
 
   const renderProducts = () => {
     return products.map((item, index) => {
-      let product = basket.find((el: any) => {
+      let product = basket.find((el: Product) => {
         return el._id == item['_id'];
       });
       return (
@@ -54,7 +56,7 @@ const Products = () => {
           key={index}
           data={item}
           isAdded={product ? true : false}
-          callback={(res: any) => {
+          callback={(res: Product) => {
             updateBasket(res);
           }}
         />
@@ -62,19 +64,19 @@ const Products = () => {
     });
   };
 
-  const updateBasket = (data: any) => {
+  const updateBasket = (data: Product) => {
     let tempArr = [];
     let dispatchetData = {
       total: data.price,
-      cargoTaxes: data.cargo + (data.price * environment.TAX_RATE) / 100,
+      cargoTaxes: data.cargo || 0 + (data.price || 0 * environment.TAX_RATE) / 100,
     };
-
-    let product = basket.find((el: any) => {
+    
+    let product = basket.find((el: Product) => {
       return el._id == data._id;
     });
 
     if (product) {
-      let products = basket.filter((el: any) => {
+      let products = basket.filter((el: Product) => {
         return el._id != data._id;
       });
       tempArr = products || [];
@@ -82,10 +84,6 @@ const Products = () => {
     } else {
       tempArr = [...basket, data];
       store.dispatch(increment(dispatchetData));
-    }
-
-    if (!tempArr.length) {
-      setPrice({total: 0, cargoTaxes: 0});
     }
 
     setBasket(tempArr);
@@ -96,19 +94,6 @@ const Products = () => {
     setPrice({cargoTaxes: state.cargoTaxes, total: state.total});
   });
 
-  // const calculatePrice = () => {
-  //   let tempTotal = 0;
-  //   let tempCargoTaxes = 0;
-
-  //   basket.forEach((el: any) => {
-  //     tempTotal += el['price'];
-  //     tempCargoTaxes +=
-  //       el['cargo'] + (el['price'] * environment.TAX_RATE) / 100;
-
-  //     setPrice({total: tempTotal, cargoTaxes: tempCargoTaxes});
-  //   });
-  // };
-
   return (
     <AppContainer>
       <AppProductsList>{renderProducts()}</AppProductsList>
@@ -117,7 +102,7 @@ const Products = () => {
         <AppText>Toplam: {price.total} TL</AppText>
         <AppText>Vergiler + Kargo: {price.cargoTaxes.toFixed(2)} TL</AppText>
         <AppGeneralTotalText>
-          Genel Toplam: {price.total + price.cargoTaxes} TL
+          Genel Toplam: {(price.total + price.cargoTaxes).toFixed(2)} TL
         </AppGeneralTotalText>
       </AppTotalContainer>
     </AppContainer>

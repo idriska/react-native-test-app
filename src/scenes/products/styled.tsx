@@ -10,7 +10,6 @@ const AppContainer = styled.View({
 });
 
 const AppProductsList = styled.ScrollView({
-
 });
 
 const AppTotalContainer = styled.View({
@@ -21,14 +20,14 @@ const AppProductTotalTitle = styled.Text({
   color: COLORS.SECONDARY,
   fontWeight: 400,
   fontSize: 24,
-  lineHeight: 32,
+  lineHeight: '32px',
 });
 
 const AppText = styled.Text({
   color: COLORS.SECONDARY,
   fontSize: 12,
   fontWeight: 400,
-  lineHeight: 22,
+  lineHeight: '22px',
 });
 
 const AppDivider = styled.View({
